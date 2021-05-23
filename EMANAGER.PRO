@@ -66,8 +66,10 @@ predicates
     createEmployee
     searchEmployee
     deleteEmployee
-    printExperience
-    printEducation
+    getExperience
+    getEducation
+    printExperience(ExperienceList)
+    printEducation(EducationList)
 	createExperience(string, integer)
     createEducation(string, integer)
 	printEmployee(cnp, EmployeeList)
@@ -104,15 +106,15 @@ clauses
 	menu :-
 		clearwindow,
 	    makewindow(1,7,5,"EManagerApp - MENIU PRINCIPAL",1,12,12,60),
-		write("a. Adaugare anagajat"),nl,
-		write("v. Vizualizare anagajati"), nl,
-		write("c. Cautare angajat dupa CNP"), nl,
-		write("s. Stergere angajat dupa CNP"), nl,
-		write("b. Salvati baza de date"), nl,
-		write("e. Vizualizare experienta angajat"), nl,
-		write("t. Vizualizare studii angajat"), nl,
-		write("r. Genereaza raport"), nl,
-		write("x. Iesire"), nl,
+		write("a - Adaugare anagajat"),nl,
+		write("v - Vizualizare anagajati"), nl,
+		write("c - Cautare angajat dupa CNP"), nl,
+		write("s - Stergere angajat dupa CNP"), nl,
+		write("b - Salvati baza de date"), nl,
+		write("e - Vizualizare experienta angajat"), nl,
+		write("t - Vizualizare studii angajat"), nl,
+		write("r - Genereaza raport"), nl,
+		write("x - Iesire"), nl,
         write("Optiunea dvs: "),
 		readchar(Optiune),
 		chooseOption(Optiune),
@@ -156,13 +158,13 @@ clauses
     % 6. Vizualizare experienta angajat
 	chooseOption('e') :-
 		makewindow(2,7,9,"VIZUALIZARE EXPERIENTA ANGAJAT",13,12,9,60),
-		printExperience(),
+		getExperience(),
 		readchar(_),
 		removewindow.
     % 7. Vizualizare studii angajat
 	chooseOption('t') :-
 		makewindow(2,7,9,"VIZUALIZARE STUDII ANGAJAT",13,12,9,60),
-		printEducation(),
+		getEducation(),
 		readchar(_),
 		removewindow.
     % 8. Genereaza raport
@@ -244,25 +246,37 @@ clauses
     deleteEmployee :-
         printFooter(1).
 
-    % Prints experience of given employee
-    printExperience :-
+    % Gets experience of given employee
+    getExperience :-
         write("CNP: "),
 		readln(CNP),
 		findall(Col, experience(CNP, Col), ExpList),
-		write(ExpList),
+		printExperience(ExpList),
         printFooter(0).
-    printExperience :-
+    getExperience :-
         printFooter(1).
 
-    % Prints education of given employee
-    printEducation :-
+    % Prints experience
+    printExperience([]).
+    printExperience([experiencemodel(WorkPlace, WorkTitle, YearsWorked) | RL]):-
+        write("- ",WorkPlace,", ",WorkTitle,", ",YearsWorked," year/s"),nl,
+        printExperience(RL).
+
+    % Gets education of given employee
+    getEducation :-
         write("CNP: "),
 		readln(CNP),
-		findall(Col, education(CNP, Col), ExpList),
-		write(ExpList),
+		findall(Col, education(CNP, Col), EdcList),
+		printEducation(EdcList),
         printFooter(0).
-    printEducation :-
+    getEducation :-
         printFooter(1).
+
+    % Prints education
+    printEducation([]).
+    printEducation([educationmodel(Institution, AcademicTitle, YearsStudied) | RL]):-
+        write("- ",Institution,", ",AcademicTitle,", ",YearsStudied," year/s"),nl,
+        printEducation(RL).
 
     % Adds workplace
 	createExperience(_, 0):- 
