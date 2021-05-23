@@ -43,7 +43,9 @@ clauses
 	initDB():-
 		retractall(employee(_,_)),
 		retractall(experience(_,_)),
-		consult("DATA/PERSONAL.DTA").
+		consult("DATA/PERSONAL.DTA"),
+		consult("DATA/WORK.DTA").
+		% consult("DATA/EDUCATION.DTA").
 		
 	menu :-
 		clearwindow,
