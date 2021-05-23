@@ -4,7 +4,7 @@ domains
 	lastName = string
 	telefon = string 
 	mail = string
-	cnp = integer
+	cnp = string
 	
 	lastWorkedPlace = string
 	timeWorked = integer
@@ -34,12 +34,13 @@ predicates
 	saveDB
 	iesire
 
-	adaugareLocMunca(integer, integer)
+	adaugareLocMunca(string, integer)
 	afiseazaEmpl(cnp, EmplList)
 	afiseazaEmpl(EmplList)
 
 % FUNCTION DEFINITIONS
 clauses
+    % Initializes databases
 	initDB():-
 		retractall(employee(_,_)),
 		retractall(experience(_,_)),
@@ -47,6 +48,7 @@ clauses
 		consult("DATA/WORK.DTA").
 		% consult("DATA/EDUCATION.DTA").
 		
+    % Menu UI
 	menu :-
 		clearwindow,
 	    makewindow(1,6,7,"MAIN MENU WINDOW",1,12,12,60),
@@ -66,7 +68,7 @@ clauses
 	alegereOptiune('1') :-
 		 makewindow(2,6,7,"Adaugare angajat WINDOW",13,12,9,60),
 		 write("Introdu CNP angajatului: "),
-		 readint(CNP),
+		 readln(CNP),
 		 write("Introdu nume familie angajatului: "),
 		 readln(Lastname),
 		 write("Introdu prenume angajatului: "),
@@ -103,7 +105,7 @@ clauses
 	alegereOptiune('3') :-
 		makewindow(2,6,7,"Cautare angajat dupa CNP",13,12,9,60),
 		write("Introdu CNP: "),
-		readint(CNP),nl,
+		readln(CNP),nl,
 		findall(Col,employee(CNP, Col),EmpList),
 		afiseazaEmpl(EmpList),
 		readchar(_),
@@ -113,7 +115,7 @@ clauses
 	alegereOptiune('4') :-
 		makewindow(2,6,7,"STERGERE ANGAJAT",13,12,9,60),
 		write("Introdu CNP: "),
-		readint(CNP),
+		readln(CNP),
 		employee(CNP, X),
 		write(X),
 		retract(employee(CNP, _)),nl,
@@ -134,7 +136,7 @@ clauses
 	alegereOptiune('6') :-
 		makewindow(2,6,7,"VIZUALIZARE EXPERIENTA ANGAJAT",13,12,9,60),
 		write("Introdu CNP pentru anagajat: "),
-		readint(CNP),
+		readln(CNP),
 		findall(Col, experience(CNP, Col), ExpList),
 		write(ExpList),
 		readchar(_),
@@ -151,6 +153,7 @@ clauses
 		retractall(employee(_,_)),
 		iesire().
 	
+    % Adds workplace
 	adaugareLocMunca(_, 0):- 
 		nl.	
 		
@@ -164,6 +167,7 @@ clauses
 		Loc = LocuriTrecut - 1,
 		adaugareLocMunca(CNP, Loc).
 		
+    % Prints employees
 	afiseazaEmpl([]).
 
 	afiseazaEmpl([emplmodel(Nume, Prenume, Telefon, Mail) | RL]):-
@@ -179,6 +183,7 @@ clauses
 		write(Nume),
 		write(Name).
 		
+    % Generates underline
 	underline(_,_,_,0).
   
 	underline(Lin,Col,CaractPtSub,CaractLungime):-
@@ -187,9 +192,13 @@ clauses
 		CI=Col+1,
 		underline(Lin,CI,CaractPtSub,CaractRamase).        
 	
+    % Save databases
 	saveDB() :-
-		save("DATA/PERSONAL.DTA").
+		save("DATA/PERSONAL.DTA"),
+        save("DATA/WORK.DTA").
+		% save("DATA/EDUCATION.DTA").
 	
+    % Exits program
 	iesire() :-
 		retractall(employee(_,_)),
 		exit(0).
