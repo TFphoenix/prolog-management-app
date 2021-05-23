@@ -18,6 +18,10 @@ domains
     institution = string
     academicTitle = string
     yearsStudied = integer
+
+    % BOCU
+    tllc=integer*
+    tldhc=string*
 	
     % lists
 	EmployeeList = EmployeeType*
@@ -41,19 +45,20 @@ database-Educations
 
 % FUNCTION DECLARATIONS
 predicates
-	% Subliniere formatata
-	% P1->Linia pe care se face sublinierea
-	% P2->Coloana de unde incepe sublinierea
-	% P3->Caracterul cu care se face sublinierea
-	% P4->Lungimea sublinierii in caracter
+    % formating
 	underline(integer,integer,char,integer)
+    printTable(EmployeeList)
+    printTableData(integer,integer,tldhc,tllc)
+    printHeader(string)
 
+    % general
 	initDB
 	menu 
 	alegereOptiune(char)
 	saveDB
 	iesire
 
+    % CRUD
 	adaugareLocMunca(string, integer)
 	afiseazaEmpl(cnp, EmployeeList)
 	afiseazaEmpl(EmployeeList)
@@ -112,15 +117,12 @@ clauses
     % 2. Vizualizare anagajati
 	alegereOptiune('2') :-
 		makewindow(2,6,7,"AFISEAZA ANGAJATI",13,12,9,60),
-		write("See employee"),nl,
 		findall(Col,employee(_, Col),EmpList),
-		cursor(Lin, _),
-		LS = Lin + 1,
-		underline(LS, 10, '-', 30),nl,
-		afiseazaEmpl(EmpList),
+        printHeader("Employees"),nl,
+        printTable(EmpList),
 		readchar(_),
 		removewindow.
-		
+
     % 3. Cautare angajat dupa CNP
 	alegereOptiune('3') :-
 		makewindow(2,6,7,"CAUTARE ANGAJAT",13,12,9,60),
@@ -189,7 +191,7 @@ clauses
 		Loc = LocuriTrecut - 1,
 		adaugareLocMunca(CNP, Loc).
 		
-    % Prints employees
+    % Print functions
 	afiseazaEmpl([]).
 
 	afiseazaEmpl([emplmodel(Nume, Prenume, Telefon, Mail) | RL]):-
@@ -204,6 +206,34 @@ clauses
 	afiseazaEmpl(Nume, [emplmodel( Name, _, _, _) | _]) :-
 		write(Nume),
 		write(Name).
+    
+    % Prints table header
+    printHeader("Employees") :-
+        write("Angajati:"),nl,
+        LA=1,
+        printTableData(1,0,["Nume","Prenume","Telefon","Mail"],[10,10,15,15]),
+        LS=LA+1,
+        underline(LS,0,'-',55).
+
+    % Prints table
+    printTable([]).
+    
+    printTable([emplmodel(Nume, Prenume, Telefon, Mail) | RL]):-
+        cursor(L,_),
+        L>0,
+        L<6,
+        printTableData(L,0,[Nume,Prenume,Telefon,Mail],[10,10,15,15]),nl,
+        cursor(LC,_),cursor(LC,0),
+        printTable(RL).
+    
+    % Prints table data cells
+    printTableData(_,_,[],[]).
+
+    printTableData(L,CC,[Col|RLC],[LCol|RLL]):-
+        L<6,
+        cursor(L,CC),write(Col),
+        UCC=CC+LCol,
+        printTableData(L,UCC,RLC,RLL).
 		
     % Generates underline
 	underline(_,_,_,0).

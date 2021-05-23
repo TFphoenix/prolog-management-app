@@ -222,6 +222,7 @@ clauses
     O='6';
     O='7'.
   
+  %----------
   exec('1'):-!,
     makewindow(2,6,7,"Consultare baza de fapte",13,12,9,60),
     clearwindow,
