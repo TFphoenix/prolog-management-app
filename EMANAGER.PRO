@@ -1,22 +1,39 @@
 % MODELS
 domains 
+    % general
+	cnp = string
+
+    % employee
 	firstName = string
 	lastName = string
 	telefon = string 
 	mail = string
-	cnp = string
 	
-	lastWorkedPlace = string
-	timeWorked = integer
+    % experience
+	workPlace = string
+    workTitle = string
+	yearsWorked = integer
+
+    % education
+    institution = string
+    academicTitle = string
+    yearsStudied = integer
 	
-	EmplList = EmplType*
+    % lists
+	EmployeeList = EmployeeType*
 	ExperienceList = ExperienceType*
-	EmplType = emplmodel(firstName, lastName, telefon, mail)
-	ExperienceType = experiencemodel(lastWorkedPlace, timeWorked)
+	EducationList = EducationType*
+
+    % types
+	EmployeeType = emplmodel(firstName, lastName, telefon, mail)
+	ExperienceType = experiencemodel(workPlace, workTitle, yearsWorked)
+	EducationType = educationmodel(institution, academicTitle, yearsStudied)
 	
 % DATABASES	
-database 
-	employee(cnp, EmplType)
+database-Employees
+	employee(cnp, EmployeeType)
+
+database-Experiences
 	experience(cnp, ExperienceType)
 
 % FUNCTION DECLARATIONS
@@ -35,17 +52,17 @@ predicates
 	iesire
 
 	adaugareLocMunca(string, integer)
-	afiseazaEmpl(cnp, EmplList)
-	afiseazaEmpl(EmplList)
+	afiseazaEmpl(cnp, EmployeeList)
+	afiseazaEmpl(EmployeeList)
 
 % FUNCTION DEFINITIONS
 clauses
     % Initializes databases
 	initDB():-
-		retractall(employee(_,_)),
-		retractall(experience(_,_)),
-		consult("DATA/PERSONAL.DTA"),
-		consult("DATA/WORK.DTA").
+		% retractall(employee(_,_)),
+		% retractall(experience(_,_)),
+		consult("DATA/PERSONAL.DTA", Employees),
+		consult("DATA/WORK.DTA", Experiences).
 		% consult("DATA/EDUCATION.DTA").
 		
     % Menu UI
@@ -160,9 +177,11 @@ clauses
 	adaugareLocMunca(CNP, LocuriTrecut) :-
 		write("Introduceti numele locului lucrat:"),
 		readln(LocLucrat),
+        write("Introduceti titlul pozitiei pe care s-a lucrat:"),
+		readln(Pozitie),
 		write("Intruduceti timpul de ani ca numar:"),
 		readint(AniLucrati),
-		assertz(experience(CNP, experiencemodel(LocLucrat, AniLucrati))),
+		assertz(experience(CNP, experiencemodel(LocLucrat, Pozitie, AniLucrati))),
 		nl,
 		Loc = LocuriTrecut - 1,
 		adaugareLocMunca(CNP, Loc).
@@ -194,8 +213,8 @@ clauses
 	
     % Save databases
 	saveDB() :-
-		save("DATA/PERSONAL.DTA"),
-        save("DATA/WORK.DTA").
+		save("DATA/PERSONAL.DTA", Employees),
+        save("DATA/WORK.DTA", Experiences).
 		% save("DATA/EDUCATION.DTA").
 	
     % Exits program

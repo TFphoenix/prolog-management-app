@@ -1,1 +1,2 @@
 employee("10",emplmodel("Teodor","Mihaescu","0742878823","teodor@mihaescu.info"))
+employee("11",emplmodel("Claudiu","martinescu","07222222","martinescu@mail.com"))
