@@ -67,7 +67,9 @@ predicates
     searchEmployee
     deleteEmployee
     printExperience
+    printEducation
 	createExperience(string, integer)
+    createEducation(string, integer)
 	printEmployee(cnp, EmployeeList)
 	printEmployee(EmployeeList)
 
@@ -108,7 +110,8 @@ clauses
 		write("4. Stergere angajat dupa CNP"), nl,
 		write("5. Salvati baza de date"), nl,
 		write("6. Vizualizare experienta angajat"), nl,
-		write("7. Genereaza raport"), nl,
+		write("6. Vizualizare studii angajat"), nl,
+		write("8. Genereaza raport"), nl,
 		write("9. Iesire"), nl,
         write("Optiunea dvs: "),
 		readchar(Optiune),
@@ -156,8 +159,14 @@ clauses
 		printExperience(),
 		readchar(_),
 		removewindow.
-    % 7. Genereaza raport
+    % 7. Vizualizare studii angajat
 	chooseOption('7') :-
+		makewindow(2,7,9,"VIZUALIZARE STUDII ANGAJAT",13,12,9,60),
+		printEducation(),
+		readchar(_),
+		removewindow.
+    % 8. Genereaza raport
+	chooseOption('8') :-
 		makewindow(2,7,3,"GENEREAZA RAPORT ANGAJATI",13,12,9,60),
 		% generateReport(_),
         write("Nume raport: "),
@@ -165,7 +174,7 @@ clauses
         generateReport(RN),
         readchar(_),
 		removewindow.
-    chooseOption('7') :-
+    chooseOption('8') :-
         printFooter(1),
         readchar(_),
 		removewindow.
@@ -181,6 +190,7 @@ clauses
 	
     % Adds employee
     createEmployee :-
+        write(">>> GENERAL (1/3)\n"),
         write("CNP: "),
         readln(CNP),
         write("Nume: "),
@@ -196,10 +206,18 @@ clauses
         nl,
         saveDB(),
         write("Angajatul a fost adaugat cu succes!\n\n"),
+        % experience
+        write(">>> CARIERA (2/3)\n"),
         write("Locuri de munca precedente: "),
-        readint(LocuriTrecut),nl,
-        createExperience(CNP, LocuriTrecut),
-        saveDB().
+        readint(ExperienceNr),nl,
+        createExperience(CNP, ExperienceNr),
+        % education
+        write(">>> EDUCATIE (3/3)\n"),
+        write("Numar studii: "),
+        readint(EducationeNr),nl,
+        createEducation(CNP, EducationeNr),
+        saveDB(),
+        printFooter(2).
     createEmployee :-
         printFooter(1).
 
@@ -221,7 +239,7 @@ clauses
 		write(X),
 		retract(employee(CNP, _)),nl,
 		saveDB(),
-		write("Angajatul a fost sters cu succes\n"),
+		write("Angajatul a fost sters cu succes!\n"),
 		saveDB().
     deleteEmployee :-
         printFooter(1).
@@ -236,20 +254,45 @@ clauses
     printExperience :-
         printFooter(1).
 
+    % Prints education of given employee
+    printEducation :-
+        write("CNP: "),
+		readln(CNP),
+		findall(Col, education(CNP, Col), ExpList),
+		write(ExpList),
+        printFooter(0).
+    printEducation :-
+        printFooter(1).
+
     % Adds workplace
 	createExperience(_, 0):- 
 		nl.	
-	createExperience(CNP, LocuriTrecut) :-
+	createExperience(CNP, ExperienceNr) :-
 		write("Introduceti numele locului lucrat:"),
 		readln(LocLucrat),
         write("Introduceti titlul pozitiei pe care s-a lucrat:"),
 		readln(Pozitie),
-		write("Intruduceti timpul de ani ca numar:"),
+		write("Intruduceti numarul de ani:"),
 		readint(AniLucrati),
 		assertz(experience(CNP, experiencemodel(LocLucrat, Pozitie, AniLucrati))),
 		nl,
-		Loc = LocuriTrecut - 1,
+		Loc = ExperienceNr - 1,
 		createExperience(CNP, Loc).
+
+    % Adds academic path
+    createEducation(_, 0):- 
+		nl.	
+        createEducation(CNP, EducationNr) :-
+		write("Introduceti numele institutiei:"),
+		readln(Institutie),
+        write("Introduceti titlul academic:"),
+		readln(Titlu),
+		write("Intruduceti numarul de ani:"),
+		readint(Ani),
+		assertz(education(CNP, educationmodel(Institutie, Titlu, Ani))),
+		nl,
+		Loc = EducationNr - 1,
+		createEducation(CNP, Loc).
 		
     % Prints employee
 	printEmployee([]).
