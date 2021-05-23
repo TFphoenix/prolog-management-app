@@ -22,6 +22,9 @@ domains
     % formating
     tllc=integer*
     tldhc=string*
+
+    % reports
+    file=nsfr
 	
     % lists
 	EmployeeList = EmployeeType*
@@ -67,6 +70,10 @@ predicates
 	createExperience(string, integer)
 	printEmployee(cnp, EmployeeList)
 	printEmployee(EmployeeList)
+
+    % reports
+    generateReport(string)
+    genrap(EmployeeList)
 
 % FUNCTION DEFINITIONS
 clauses
@@ -152,7 +159,15 @@ clauses
     % 7. Genereaza raport
 	chooseOption('7') :-
 		makewindow(2,7,3,"GENEREAZA RAPORT ANGAJATI",13,12,9,60),
-		write(""),
+		% generateReport(_),
+        write("Nume raport: "),
+        readln(RN),
+        generateReport(RN),
+        readchar(_),
+		removewindow.
+    chooseOption('7') :-
+        printFooter(1),
+        readchar(_),
 		removewindow.
     % 9. Iesire
 	chooseOption('9') :-
@@ -289,6 +304,26 @@ clauses
         write("\n\tApasati orice tasta pentru a reveni...").
     printFooter(1) :-
         write("\n\t<!> EROARE\n\tApasati orice tasta pentru a reveni...").
+    printFooter(2) :-
+        write("\n\t<*> SUCCES\n\tApasati orice tasta pentru a reveni...").
+
+    % Generates report of employees
+    generateReport(ReportName) :-
+        openwrite(nsfr,ReportName),
+        writedevice(nsfr),
+        findall(Col,employee(_, Col),EmpList),
+        genrap(EmpList),
+        closefile(nsfr),
+        writedevice(screen),
+        printFooter(2).
+    generateReport(_) :-
+        printFooter(1).
+
+    % Generates report
+    genrap([]).
+    genrap([emplmodel(Nume, Prenume, Telefon, Mail) | RL]):-
+        write(Nume,"/",Prenume,"/",Telefon,"/",Mail),nl,
+        genrap(RL).
 
     % Save databases
 	saveDB() :-
