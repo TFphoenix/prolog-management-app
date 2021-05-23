@@ -1,0 +1,12 @@
+predicates
+trans(string)
+run
+scrie(char)
+clauses
+run:-readln(X),trans(X).
+trans("").
+trans(S1):-frontchar(S1,C,S2),scrie(C),trans(S2).
+scrie('['):-!.
+scrie(']'):-!.
+scrie(','):-!.
+scrie(C):-write(C).

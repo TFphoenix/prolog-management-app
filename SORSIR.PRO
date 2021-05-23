@@ -1,0 +1,18 @@
+trace
+domains
+  Lista=integer*
+predicates
+  citlis(Lista)
+clauses
+  citlis([H|T]):-
+    write("Element:"),
+    readint(H),
+    nl,
+    H<>0,
+    citlis(T).
+ citlis([]).
+goal
+ clearwindow,
+ citlis(Sir),
+ write(Sir).  
+ 
