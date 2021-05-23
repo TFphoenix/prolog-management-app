@@ -104,29 +104,29 @@ clauses
 	menu :-
 		clearwindow,
 	    makewindow(1,7,5,"EManagerApp - MENIU PRINCIPAL",1,12,12,60),
-		write("1. Adaugare anagajat"),nl,
-		write("2. Vizualizare anagajati"), nl,
-		write("3. Cautare angajat dupa CNP"), nl,
-		write("4. Stergere angajat dupa CNP"), nl,
-		write("5. Salvati baza de date"), nl,
-		write("6. Vizualizare experienta angajat"), nl,
-		write("6. Vizualizare studii angajat"), nl,
-		write("8. Genereaza raport"), nl,
-		write("9. Iesire"), nl,
+		write("a. Adaugare anagajat"),nl,
+		write("v. Vizualizare anagajati"), nl,
+		write("c. Cautare angajat dupa CNP"), nl,
+		write("s. Stergere angajat dupa CNP"), nl,
+		write("b. Salvati baza de date"), nl,
+		write("e. Vizualizare experienta angajat"), nl,
+		write("t. Vizualizare studii angajat"), nl,
+		write("r. Genereaza raport"), nl,
+		write("x. Iesire"), nl,
         write("Optiunea dvs: "),
 		readchar(Optiune),
 		chooseOption(Optiune),
 		menu().    
 		
     % 1. Adaugare anagajat
-	chooseOption('1') :-
+	chooseOption('a') :-
 		 makewindow(2,7,2,"ADAUGARE ANGAJAT",13,12,9,60),
 		 createEmployee(),
 		 readchar(_),
 		 removewindow.
     % 2. Vizualizare anagajati
-	chooseOption('2') :-
-		makewindow(2,7,9,"AFISEAZA ANGAJATI",13,12,9,60),
+	chooseOption('v') :-
+		makewindow(2,7,9,"AFISEAZA ANGAJATI",13,12,12,60),
 		findall(Col,employee(_, Col),EmpList),
         printHeader("Employees"),nl,
         printTable(EmpList),
@@ -134,19 +134,19 @@ clauses
 		readchar(_),
 		removewindow.
     % 3. Cautare angajat dupa CNP
-	chooseOption('3') :-
+	chooseOption('c') :-
 		makewindow(2,7,3,"CAUTARE ANGAJAT",13,12,9,60),
 		searchEmployee(),
 		readchar(_),
 		removewindow.	
     % 4. Stergere angajat dupa CNP
-	chooseOption('4') :-
+	chooseOption('s') :-
 		makewindow(2,7,12,"STERGERE ANGAJAT",13,12,9,60),
 		deleteEmployee(),
         readchar(_),
 		removewindow.
     % 5. Salvati baza de date
-	chooseOption('5') :-
+	chooseOption('b') :-
 		makewindow(2,7,2,"SALVARE BAZA DE DATE",13,12,9,60),
 		saveDB(),
 		write("Baza de date a fost salvata cu succes!"),
@@ -154,19 +154,19 @@ clauses
 		readchar(_),
 		removewindow.
     % 6. Vizualizare experienta angajat
-	chooseOption('6') :-
+	chooseOption('e') :-
 		makewindow(2,7,9,"VIZUALIZARE EXPERIENTA ANGAJAT",13,12,9,60),
 		printExperience(),
 		readchar(_),
 		removewindow.
     % 7. Vizualizare studii angajat
-	chooseOption('7') :-
+	chooseOption('t') :-
 		makewindow(2,7,9,"VIZUALIZARE STUDII ANGAJAT",13,12,9,60),
 		printEducation(),
 		readchar(_),
 		removewindow.
     % 8. Genereaza raport
-	chooseOption('8') :-
+	chooseOption('r') :-
 		makewindow(2,7,3,"GENEREAZA RAPORT ANGAJATI",13,12,9,60),
 		% generateReport(_),
         write("Nume raport: "),
@@ -174,12 +174,12 @@ clauses
         generateReport(RN),
         readchar(_),
 		removewindow.
-    chooseOption('8') :-
+    chooseOption('r') :-
         printFooter(1),
         readchar(_),
 		removewindow.
     % 9. Iesire
-	chooseOption('9') :-
+	chooseOption('x') :-
 		retractall(employee(_,_)),
 		exitProgram().
     chooseOption(_) :-
@@ -310,11 +310,8 @@ clauses
     
     % Prints table header
     printHeader("Employees") :-
-        write("Angajati:"),nl,
-        LA=1,
-        printTableData(1,0,["Nume","Prenume","Telefon","Mail"],[10,10,15,15]),
-        LS=LA+1,
-        underline(LS,0,'-',55).
+        printTableData(0,0,["Nume","Prenume","Telefon","Mail"],[10,10,15,15]),
+        underline(1,0,'-',55).
 
     % Prints table
     printTable([]).
@@ -336,8 +333,9 @@ clauses
 		
     % Generates underline
 	underline(_,_,_,0).
-	underline(Lin,Col,CaractPtSub,CaractLungime):-
-		cursor(Lin,Col),write(CaractPtSub),
+	underline(Lin,Col,CaractPtSub,CaractLungime) :-
+		cursor(Lin,Col),
+        write(CaractPtSub),
 		CaractRamase=CaractLungime-1,
 		CI=Col+1,
 		underline(Lin,CI,CaractPtSub,CaractRamase).        
