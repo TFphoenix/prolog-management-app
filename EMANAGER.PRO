@@ -36,6 +36,9 @@ database-Employees
 database-Experiences
 	experience(cnp, ExperienceType)
 
+database-Educations
+    education(cnp, EducationType)
+
 % FUNCTION DECLARATIONS
 predicates
 	% Subliniere formatata
@@ -59,16 +62,16 @@ predicates
 clauses
     % Initializes databases
 	initDB():-
-		% retractall(employee(_,_)),
-		% retractall(experience(_,_)),
+		retractall(employee(_,_)),
+		retractall(experience(_,_)),
 		consult("DATA/PERSONAL.DTA", Employees),
-		consult("DATA/WORK.DTA", Experiences).
-		% consult("DATA/EDUCATION.DTA").
+		consult("DATA/WORK.DTA", Experiences),
+		consult("DATA/EDUC.DTA", Educations).
 		
     % Menu UI
 	menu :-
 		clearwindow,
-	    makewindow(1,6,7,"MAIN MENU WINDOW",1,12,12,60),
+	    makewindow(1,6,7,"EManagerApp - MENIU PRINCIPAL",1,12,12,60),
 		write("1. Adaugare anagajat"),nl,
 		write("2. Vizualizare anagajati"), nl,
 		write("3. Cautare angajat dupa CNP"), nl,
@@ -83,7 +86,7 @@ clauses
 		
     % 1. Adaugare anagajat
 	alegereOptiune('1') :-
-		 makewindow(2,6,7,"Adaugare angajat WINDOW",13,12,9,60),
+		 makewindow(2,6,7,"ADAUGARE ANGAJAT",13,12,9,60),
 		 write("Introdu CNP angajatului: "),
 		 readln(CNP),
 		 write("Introdu nume familie angajatului: "),
@@ -98,7 +101,7 @@ clauses
 		 nl,
 		 nl,
 		 saveDB(),
-		 write("Angajatul a fost adaugat cu succes!"),
+		 write("Angajatul a fost adaugat cu succes!\n"),
 		 write("Introduceti cate locuri de munca a avut angajatul in trecut: "),
 		 readint(LocuriTrecut),nl,
 		 adaugareLocMunca(CNP, LocuriTrecut),
@@ -108,7 +111,7 @@ clauses
 	
     % 2. Vizualizare anagajati
 	alegereOptiune('2') :-
-		makewindow(2,6,7,"Afiseaza toti angajatii",13,12,9,60),
+		makewindow(2,6,7,"AFISEAZA ANGAJATI",13,12,9,60),
 		write("See employee"),nl,
 		findall(Col,employee(_, Col),EmpList),
 		cursor(Lin, _),
@@ -120,7 +123,7 @@ clauses
 		
     % 3. Cautare angajat dupa CNP
 	alegereOptiune('3') :-
-		makewindow(2,6,7,"Cautare angajat dupa CNP",13,12,9,60),
+		makewindow(2,6,7,"CAUTARE ANGAJAT",13,12,9,60),
 		write("Introdu CNP: "),
 		readln(CNP),nl,
 		findall(Col,employee(CNP, Col),EmpList),
@@ -161,7 +164,7 @@ clauses
 		
     % 7. Genereaza raport
 	alegereOptiune('7') :-
-		makewindow(2,6,7,"Vizualizare experienta angajat",13,12,9,60),
+		makewindow(2,6,7,"GENEREAZA RAPORT",13,12,9,60),
 		write(""),
 		removewindow.
 		
@@ -214,8 +217,8 @@ clauses
     % Save databases
 	saveDB() :-
 		save("DATA/PERSONAL.DTA", Employees),
-        save("DATA/WORK.DTA", Experiences).
-		% save("DATA/EDUCATION.DTA").
+        save("DATA/WORK.DTA", Experiences),
+		save("DATA/EDUC.DTA", Educations).
 	
     % Exits program
 	iesire() :-
