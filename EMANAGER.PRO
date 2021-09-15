@@ -128,7 +128,7 @@ clauses
 		 removewindow.
     % 2. Vizualizare anagajati
 	chooseOption('v') :-
-		makewindow(2,7,9,"AFISEAZA ANGAJATI",13,12,12,60),
+		makewindow(2,7,9,"AFISEAZA ANGAJATI",1,12,12,65),
 		findall(Col,employee(_, Col),EmpList),
         printHeader("Employees"),nl,
         printTable(EmpList),

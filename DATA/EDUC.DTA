@@ -1,1 +1,4 @@
 education("15",educationmodel("UNITBV","licenta",3))
+education("15",educationmodel("UNITBV","licenta",3))
+education("19",educationmodel("Univ. ASD","licentiat",3))
+education("19",educationmodel("Univ awd","masterand",2))
